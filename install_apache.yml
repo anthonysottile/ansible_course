@@ -20,29 +20,20 @@
         state: latest
       when: ansible_distribution == "Ubuntu"
 
-    # Fedora tasks with DNF4 forced
+    # Fedora tasks using command module
     - name: update repo index (Fedora)
-      ansible.builtin.dnf:
-        update_cache: yes
-      environment:
-        DNF_USE_DNF4: "1"
-        LIBDNF_USE_DNF4: "1"
+      ansible.builtin.command: dnf makecache
+      changed_when: true
       when: ansible_distribution == "Fedora"
 
     - name: install httpd package (Fedora)
-      ansible.builtin.dnf:
-        name: httpd
-        state: latest
-      environment:
-        DNF_USE_DNF4: "1"
-        LIBDNF_USE_DNF4: "1"
+      ansible.builtin.command: dnf install -y httpd
+      register: httpd_install
+      changed_when: "'already installed' not in httpd_install.stdout and httpd_install.rc == 0"
       when: ansible_distribution == "Fedora"
 
     - name: add php support for apache (Fedora)
-      ansible.builtin.dnf:
-        name: php
-        state: latest
-      environment:
-        DNF_USE_DNF4: "1"
-        LIBDNF_USE_DNF4: "1"
+      ansible.builtin.command: dnf install -y php
+      register: php_install
+      changed_when: "'already installed' not in php_install.stdout and php_install.rc == 0"
       when: ansible_distribution == "Fedora"
