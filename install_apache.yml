@@ -20,11 +20,6 @@
       state: latest
     when: ansible_distribution == "Ubuntu"
 
-  - name: Force DNF backend
-    ansible.builtin.set_fact:
-      ansible_pkg_mgr: dnf
-    when: ansible_distribution == "Fedora"
-
   - name: update repo index
     ansible.builtin.dnf:
       update_cache: yes
