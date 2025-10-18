@@ -2,38 +2,37 @@
 - hosts: all
   become: true
   tasks:
-    # Ubuntu tasks (unchanged)
-    - name: update repo index (Ubuntu)
-      ansible.builtin.apt:
-        update_cache: yes
-      when: ansible_distribution == "Ubuntu"
 
-    - name: install apache2 package (Ubuntu)
-      ansible.builtin.apt:
-        name: apache2
-        state: latest
-      when: ansible_distribution == "Ubuntu"
+  - name: update repo index
+    ansible.builtin.apt:
+      update_cache: yes
+    when: ansible_distribution =="Ubuntu"
 
-    - name: install support for php (Ubuntu)
-      ansible.builtin.apt:
-        name: libapache2-mod-php
-        state: latest
-      when: ansible_distribution == "Ubuntu"
+  - name: install apache2 package
+    ansible.builtin.apt:
+      name: apache2
+      state: latest
+    when: ansible_distribution == "Ubuntu"
 
-    # Fedora tasks using command module
-    - name: update repo index (Fedora)
-      ansible.builtin.command: dnf makecache
-      changed_when: true
-      when: ansible_distribution == "Fedora"
+  - name: install support for php
+    ansible.builtin.apt:
+      name: libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "Ubuntu"
 
-    - name: install httpd package (Fedora)
-      ansible.builtin.command: dnf install -y httpd
-      register: httpd_install
-      changed_when: "'already installed' not in httpd_install.stdout and httpd_install.rc == 0"
-      when: ansible_distribution == "Fedora"
+  - name: update repo index
+    ansible.builtin.dnf:
+      update_cache: yes
+    when: ansible_distribution == "Fedora"
 
-    - name: add php support for apache (Fedora)
-      ansible.builtin.command: dnf install -y php
-      register: php_install
-      changed_when: "'already installed' not in php_install.stdout and php_install.rc == 0"
-      when: ansible_distribution == "Fedora"
+  - name: install httpd package
+    ansible.builtin.dnf:
+      name: httpd
+      state: latest
+    when: ansible_distribution == "Fedora"
+
+  - name: add php support for apache
+    ansible.builtin.dnf:
+      name: php
+      state: latest
+    when: ansible_distribution == "Fedora"
