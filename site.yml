@@ -22,7 +22,7 @@
   tasks:
 
   - name: install apache on web servers
-    tags: apache,ubuntu 
+    tags: apache,ubuntu
     ansible.builtin.apt:
       name:
         - apache2
@@ -32,7 +32,7 @@
 - hosts: db_servers
   tags: db,fedora
   become: true
-  tasks: 
+  tasks:
     - name: install mariadb package on db servers
       ansible.builtin.dnf:
         name: mariadb
